@@ -33,16 +33,23 @@ CTAlternateArray2D class >> width2Height3 [
 { #category : 'iterate' }
 CTAlternateArray2D >> allPositionsDo: aBlock [
 	"Execute a Block on all the positions (points) of the receiver."
-	self firstPosition pointTo: self dimension do: aBlock
+	1 to: self height do: [ :y |
+        1 to: self width do: [ :x |aBlock value: (x @ y)]]
 ]
 
 { #category : 'iterate' }
 CTAlternateArray2D >> allPositionsWithin: someDistance from: someOrigin [
-	| answer topLeft bottomRight |
+	| answer xRange yRange |
 	answer := OrderedCollection new.
-	topLeft := someOrigin - someDistance max: self firstPosition.
-	bottomRight := someOrigin + someDistance min: self dimension.
-	topLeft pointTo: bottomRight do: [ :each | answer add: each ].
+	xRange := (someOrigin x - someDistance x max: 1) to:
+		(someOrigin x + someDistance x min: self width).
+
+	yRange := (someOrigin y - someDistance y max: 1) to:
+		(someOrigin y + someDistance y min: self height).
+
+	yRange do: [ :y |
+		answer addAll: (xRange collect: [ :x | x @ y ]) ].
+
 	^ answer
 ]
 
